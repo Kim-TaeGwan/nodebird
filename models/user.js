@@ -47,5 +47,22 @@ module.exports = class User extends Sequelize.Model {
       }
     );
   }
-  static associate(db) {}
+  static associate(db) {
+    /*
+     * User 모델과 Post 모델은 1(User):N(Post) 관계에 있으므로 hasMany 로 연결되어있다.
+     * user.getPosts, user.addPosts 같은 관계 메서드들이 생성된다.
+     *
+     * */
+    db.User.hasMany(db.post);
+    db.User.belongsToMany(db.User, {
+      foreignKey: "followingId",
+      as: "Followers",
+      through: "Follow",
+    });
+    db.User.belongsToMany(db.User, {
+      foreignKey: "followerId",
+      as: "Followings",
+      through: "Follow",
+    });
+  }
 };
